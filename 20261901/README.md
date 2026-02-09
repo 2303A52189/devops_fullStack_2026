@@ -1,0 +1,1 @@
+# devops_fullsatck-2026
