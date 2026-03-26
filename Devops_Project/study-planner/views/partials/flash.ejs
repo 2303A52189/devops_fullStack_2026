@@ -1,0 +1,24 @@
+<% if (flashSuccess && flashSuccess.length) { %>
+  <div class="flash-container">
+    <div class="flash flash-success">
+      <span>✓</span> <%= flashSuccess[0] %>
+      <button class="flash-close" type="button">×</button>
+    </div>
+  </div>
+<% } %>
+<% if (flashError && flashError.length) { %>
+  <div class="flash-container">
+    <div class="flash flash-error">
+      <span>⚠</span> <%= flashError[0] %>
+      <button class="flash-close" type="button">×</button>
+    </div>
+  </div>
+<% } %>
+<% if (flashInfo && flashInfo.length) { %>
+  <div class="flash-container">
+    <div class="flash flash-info">
+      <span>ℹ</span> <%= flashInfo[0] %>
+      <button class="flash-close" type="button">×</button>
+    </div>
+  </div>
+<% } %>

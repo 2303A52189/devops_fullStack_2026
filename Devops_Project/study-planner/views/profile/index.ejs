@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="app-wrapper">
+  <%- include('../partials/sidebar') %>
+  <div class="main-content">
+    <%- include('../partials/topbar', { pageTitle: 'Profile' }) %>
+    <%- include('../partials/flash') %>
+    <div class="page-content">
+      <div class="page-header">
+        <div class="page-header-left">
+          <h1 class="page-title">My Profile</h1>
+          <p class="page-subtitle">Manage your account settings and preferences</p>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;">
+        <!-- Profile Info -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">◎ Profile Information</div>
+          </div>
+          <div class="card-body">
+            <!-- Avatar display -->
+            <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px;padding:16px;background:var(--bg-elevated);border-radius:var(--radius);">
+              <div class="avatar-lg" id="avatarPreview">
+                <% if (user.avatar) { %>
+                  <img src="<%= user.avatar %>" alt="<%= user.name %>" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
+                <% } else { %>
+                  <%= user.name.charAt(0).toUpperCase() %>
+                <% } %>
+              </div>
+              <div>
+                <div style="font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--text-primary);"><%= user.name %></div>
+                <div style="font-size:13px;color:var(--text-secondary);"><%= user.email %></div>
+                <span class="badge badge-<%= user.role === 'admin' ? 'critical' : 'in-progress' %>" style="margin-top:6px;"><%= user.role %></span>
+              </div>
+            </div>
+
+            <form action="/profile?_method=PUT" method="POST" enctype="multipart/form-data" novalidate>
+              <div class="form-group">
+                <label class="form-label" for="name">Full Name *</label>
+                <input type="text" id="name" name="name" class="form-control" value="<%= user.name %>" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="email">Email Address *</label>
+                <input type="email" id="email" name="email" class="form-control" value="<%= user.email %>" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="studyHoursPerDay">Daily Study Hours</label>
+                <select id="studyHoursPerDay" name="studyHoursPerDay" class="form-control">
+                  <% for (let h = 1; h <= 12; h++) { %>
+                    <option value="<%= h %>" <%= user.studyHoursPerDay === h ? 'selected' : '' %>>
+                      <%= h %> hour<%= h !== 1 ? 's' : '' %> per day
+                    </option>
+                  <% } %>
+                </select>
+                <p style="font-size:11px;color:var(--text-muted);margin-top:5px;">AI uses this to build your daily schedule.</p>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="avatar">Profile Picture</label>
+                <input type="file" id="avatar" name="avatar" class="form-control"
+                  accept="image/jpeg,image/png,image/gif,image/webp"
+                  onchange="previewAvatar(this)">
+                <p style="font-size:11px;color:var(--text-muted);margin-top:5px;">Max 5MB. JPG, PNG, GIF, WebP accepted.</p>
+              </div>
+
+              <button type="submit" class="btn btn-primary">Save Profile</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Change Password -->
+        <div>
+          <div class="card" style="margin-bottom:20px;">
+            <div class="card-header">
+              <div class="card-title">🔐 Change Password</div>
+            </div>
+            <div class="card-body">
+              <form action="/profile/password?_method=PUT" method="POST" novalidate>
+                <div class="form-group">
+                  <label class="form-label" for="currentPassword">Current Password *</label>
+                  <input type="password" id="currentPassword" name="currentPassword" class="form-control" required autocomplete="current-password">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="newPassword">New Password *</label>
+                  <input type="password" id="newPassword" name="newPassword" class="form-control" required autocomplete="new-password" minlength="6">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="confirmPassword">Confirm New Password *</label>
+                  <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" required autocomplete="new-password">
+                </div>
+                <button type="submit" class="btn btn-secondary">Update Password</button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Account Info -->
+          <div class="card">
+            <div class="card-header"><div class="card-title">ℹ Account Info</div></div>
+            <div class="card-body" style="font-size:13px;">
+              <% const rows = [
+                ['Member Since', new Date(user.createdAt).toLocaleDateString('en-US',{month:'long',year:'numeric'})],
+                ['Last Login', user.lastLogin ? new Date(user.lastLogin).toLocaleString() : 'N/A'],
+                ['Account Status', user.isActive ? '✓ Active' : '✕ Inactive'],
+                ['Study Hours/Day', (user.studyHoursPerDay || 4) + 'h']
+              ]; %>
+              <% rows.forEach(([label, value]) => { %>
+              <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);">
+                <span style="color:var(--text-muted)"><%= label %></span>
+                <span style="color:var(--text-primary);font-weight:500;"><%= value %></span>
+              </div>
+              <% }) %>
+            </div>
+          </div>
+
+          <!-- Danger zone -->
+          <div class="card" style="margin-top:16px;border-color:rgba(255,77,109,0.15);">
+            <div class="card-header"><div class="card-title" style="color:var(--red);">⚠ Session</div></div>
+            <div class="card-body">
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <div style="font-size:13px;color:var(--text-secondary);">Sign out of your current session</div>
+                <form action="/auth/logout" method="POST">
+                  <button type="submit" class="btn btn-danger btn-sm">Logout</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/js/app.js"></script>
+<script>
+function previewAvatar(input) {
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const preview = document.getElementById('avatarPreview');
+      preview.innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+</script>
+</body>
+</html>

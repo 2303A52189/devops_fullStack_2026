@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="app-wrapper">
+  <%- include('../partials/sidebar') %>
+  <div class="main-content">
+    <%- include('../partials/topbar', { pageTitle: task.topic }) %>
+    <%- include('../partials/flash') %>
+    <div class="page-content">
+      <div class="page-header">
+        <div class="page-header-left">
+          <h1 class="page-title"><%= task.topic %></h1>
+          <p class="page-subtitle"><%= task.subject %> &mdash; Created <%= new Date(task.createdAt).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}) %></p>
+        </div>
+        <div class="d-flex gap-8">
+          <a href="/planner/<%= task._id %>/edit" class="btn btn-secondary">✎ Edit</a>
+          <% if (task.status !== 'completed') { %>
+          <form action="/planner/<%= task._id %>/complete" method="POST">
+            <button type="submit" class="btn btn-success">✓ Mark Complete</button>
+          </form>
+          <% } %>
+          <a href="/planner" class="btn btn-ghost">← Tasks</a>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:2fr 1fr;gap:24px;align-items:start;">
+        <div>
+          <!-- Main details -->
+          <div class="card" style="margin-bottom:20px;">
+            <div class="card-header">
+              <div class="card-title">Task Details</div>
+              <span class="badge badge-<%= task.status %>"><%= task.status %></span>
+            </div>
+            <div class="card-body">
+              <% if (task.description) { %>
+              <div style="margin-bottom:20px;">
+                <div class="form-label">Description</div>
+                <p style="color:var(--text-secondary);font-size:14px;line-height:1.7;"><%= task.description %></p>
+              </div>
+              <% } %>
+
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:20px;">
+                <div>
+                  <div class="form-label">Priority</div>
+                  <span class="badge badge-<%= task.priority %>"><%= task.priority %></span>
+                </div>
+                <div>
+                  <div class="form-label">Difficulty</div>
+                  <span class="badge badge-<%= task.difficulty %>"><%= task.difficulty %></span>
+                </div>
+                <div>
+                  <div class="form-label">AI Score</div>
+                  <span class="ai-score">✦ <%= task.aiScore %></span>
+                </div>
+              </div>
+
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+                <div>
+                  <div class="form-label">Deadline</div>
+                  <div style="font-size:15px;font-weight:600;color:<%= task.daysLeft < 0 ? 'var(--red)' : task.daysLeft <= 3 ? 'var(--amber)' : 'var(--text-primary)' %>">
+                    <%= new Date(task.deadline).toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'}) %>
+                  </div>
+                  <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">
+                    <%= task.daysLeft < 0 ? `${Math.abs(task.daysLeft)} days overdue` : task.daysLeft === 0 ? 'Due today!' : `${task.daysLeft} days remaining` %>
+                  </div>
+                </div>
+                <div>
+                  <div class="form-label">Hours</div>
+                  <div style="font-size:14px;color:var(--text-primary);">
+                    Estimated: <strong><%= task.estimatedHours %>h</strong>
+                    <% if (task.actualHours) { %> / Actual: <strong style="color:var(--green);"><%= task.actualHours %>h</strong><% } %>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Progress bar -->
+              <div style="margin-bottom:20px;">
+                <div class="form-label" style="margin-bottom:8px;">Progress</div>
+                <div class="priority-bar" style="height:8px;">
+                  <%
+                    const pct = task.status === 'completed' ? 100 :
+                                task.status === 'in-progress' ? 50 :
+                                task.status === 'pending' ? 10 : 0;
+                  %>
+                  <div class="priority-fill" style="width:<%= pct %>%;background:<%= pct === 100 ? 'var(--green)' : 'var(--accent)' %>;"></div>
+                </div>
+                <div style="font-size:11px;color:var(--text-muted);margin-top:4px;"><%= pct %>% — <%= task.status %></div>
+              </div>
+
+              <% if (task.tags && task.tags.length) { %>
+              <div>
+                <div class="form-label">Tags</div>
+                <div class="d-flex gap-8" style="flex-wrap:wrap;">
+                  <% task.tags.forEach(tag => { %>
+                    <span style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:20px;padding:3px 10px;font-size:11px;color:var(--text-secondary);">#<%= tag %></span>
+                  <% }) %>
+                </div>
+              </div>
+              <% } %>
+
+              <% if (task.notes) { %>
+              <div style="margin-top:20px;padding:16px;background:var(--bg-elevated);border-radius:var(--radius-sm);border-left:3px solid var(--accent);">
+                <div class="form-label">Notes</div>
+                <p style="font-size:13.5px;color:var(--text-secondary);line-height:1.7;"><%= task.notes %></p>
+              </div>
+              <% } %>
+            </div>
+          </div>
+
+          <!-- Danger zone -->
+          <div class="card" style="border-color:rgba(255,77,109,0.2);">
+            <div class="card-header">
+              <div class="card-title" style="color:var(--red);">⚠ Danger Zone</div>
+            </div>
+            <div class="card-body">
+              <div class="d-flex align-center justify-between">
+                <div>
+                  <div style="font-size:13.5px;font-weight:600;color:var(--text-primary);">Delete this task</div>
+                  <div style="font-size:12px;color:var(--text-muted);">This action is permanent and cannot be undone.</div>
+                </div>
+                <form action="/planner/<%= task._id %>?_method=DELETE" method="POST">
+                  <button type="submit" class="btn btn-danger"
+                    data-confirm="Delete '<%= task.topic %>'? This cannot be undone.">Delete Task</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Side panel -->
+        <div>
+          <div class="ai-box" style="margin-bottom:16px;">
+            <div class="ai-box-label">✦ AI Insight</div>
+            <div style="font-size:13px;color:var(--text-secondary);line-height:1.7;">
+              <% if (task.daysLeft < 0) { %>
+                🚨 This task is overdue. Tackle it immediately — the AI will reschedule your remaining tasks around it.
+              <% } else if (task.daysLeft <= 2) { %>
+                ⏰ Deadline approaching fast. Block 2–3 focused hours today.
+              <% } else if (task.difficulty === 'expert' || task.difficulty === 'hard') { %>
+                🧠 Complex topic detected. Use the Feynman technique: explain it aloud after each study session.
+              <% } else { %>
+                📚 You're on track. Consistent daily study beats last-minute cramming.
+              <% } %>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header"><div class="card-title">📋 Task Info</div></div>
+            <div class="card-body" style="font-size:13px;">
+              <% const infoRows = [
+                ['Created', new Date(task.createdAt).toLocaleDateString()],
+                ['Updated', new Date(task.updatedAt).toLocaleDateString()],
+                ['Est. Hours', task.estimatedHours + 'h'],
+                ['Actual Hours', (task.actualHours || 0) + 'h'],
+              ]; if (task.completedAt) infoRows.push(['Completed', new Date(task.completedAt).toLocaleDateString()]);
+              %>
+              <% infoRows.forEach(([label, value]) => { %>
+              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
+                <span style="color:var(--text-muted)"><%= label %></span>
+                <span style="color:var(--text-primary);font-weight:500;"><%= value %></span>
+              </div>
+              <% }) %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/js/app.js"></script>
+</body>
+</html>

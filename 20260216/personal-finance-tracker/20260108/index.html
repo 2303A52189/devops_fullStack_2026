@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Registration</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+body {
+    margin: 0;
+    min-height: 100vh;
+    background-image: url("image/bg.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.container {
+    background: rgba(255,255,255,0.93);
+    padding: 30px 32px;
+    border-radius: 14px;
+    width: 400px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+}
+
+.logo {
+    display: block;
+    margin: 0 auto 12px;
+    width: 100px;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 18px;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+label {
+    display: block;
+    margin-top: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+}
+
+input {
+    width: 100%;
+    padding: 9px;
+    margin-top: 5px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+fieldset {
+    margin-top: 15px;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #bbb;
+}
+
+fieldset legend {
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.preference-item {
+    display: flex;
+    align-items: center;
+    margin-top: 8px;
+}
+
+.preference-item input {
+    width: auto;
+    margin-right: 8px;
+}
+
+button {
+    width: 100%;
+    margin-top: 16px;
+    padding: 11px;
+    background: #4f46e5;
+    border: none;
+    border-radius: 7px;
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #4338ca;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<img src="image/registration.png" alt="Registration Image" class="logo">
+
+<h1>Registration</h1>
+
+<form action="#" method="post">
+
+<label for="firstName">First name</label>
+<input type="text" id="firstName" name="firstName" required>
+
+<label for="lastName">Last name</label>
+<input type="text" id="lastName" name="lastName" required>
+
+<label for="email">Email</label>
+<input type="email" id="email" name="email" required>
+
+<label for="password">Password</label>
+<input type="password" id="password" name="password" required>
+
+<label for="confirmPassword">Confirm password</label>
+<input type="password" id="confirmPassword" name="confirmPassword" required>
+
+<fieldset>
+<legend>Preferences</legend>
+
+<div class="preference-item">
+    <input type="checkbox" id="newsletter" name="newsletter">
+    <label for="newsletter">Subscribe to newsletter</label>
+</div>
+
+<div class="preference-item">
+    <input type="checkbox" id="terms" name="terms" required>
+    <label for="terms">Agree to terms and conditions</label>
+</div>
+
+</fieldset>
+
+<button type="submit">Register</button>
+
+</form>
+
+</div>
+
+</body>
+</html>

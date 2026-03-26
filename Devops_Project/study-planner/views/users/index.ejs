@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="app-wrapper">
+  <%- include('../partials/sidebar') %>
+  <div class="main-content">
+    <%- include('../partials/topbar', { pageTitle: 'User Management' }) %>
+    <%- include('../partials/flash') %>
+    <div class="page-content">
+      <div class="page-header">
+        <div class="page-header-left">
+          <h1 class="page-title">User Management</h1>
+          <p class="page-subtitle"><%= users.length %> registered user<%= users.length !== 1 ? 's' : '' %> in the system</p>
+        </div>
+        <div style="background:rgba(255,77,109,0.08);border:1px solid rgba(255,77,109,0.2);border-radius:var(--radius-sm);padding:7px 14px;font-size:12px;color:var(--red);font-weight:600;">
+          🔐 Admin Only
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th data-sort>User</th>
+                <th data-sort>Email</th>
+                <th data-sort>Role</th>
+                <th data-sort>Status</th>
+                <th>Tasks</th>
+                <th data-sort>Last Login</th>
+                <th data-sort>Joined</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% users.forEach(user => { %>
+              <tr data-searchable>
+                <td>
+                  <div style="display:flex;align-items:center;gap:10px;">
+                    <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--cyan));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff;flex-shrink:0;overflow:hidden;">
+                      <% if (user.avatar) { %>
+                        <img src="<%= user.avatar %>" style="width:100%;height:100%;object-fit:cover;">
+                      <% } else { %>
+                        <%= user.name.charAt(0).toUpperCase() %>
+                      <% } %>
+                    </div>
+                    <div>
+                      <div style="font-weight:600;font-size:13.5px;"><%= user.name %></div>
+                      <% if (user._id.toString() === currentUser._id.toString()) { %>
+                        <div style="font-size:10px;color:var(--accent);">You</div>
+                      <% } %>
+                    </div>
+                  </div>
+                </td>
+                <td class="td-muted"><%= user.email %></td>
+                <td>
+                  <span class="badge <%= user.role === 'admin' ? 'badge-critical' : 'badge-pending' %>">
+                    <%= user.role %>
+                  </span>
+                </td>
+                <td>
+                  <span class="badge <%= user.isActive ? 'badge-completed' : 'badge-overdue' %>">
+                    <%= user.isActive ? 'Active' : 'Inactive' %>
+                  </span>
+                </td>
+                <td>
+                  <div style="font-size:13px;">
+                    <span style="color:var(--green);font-weight:600;"><%= user.taskCompleted %></span>
+                    <span style="color:var(--text-muted);">/<%= user.taskTotal %></span>
+                  </div>
+                </td>
+                <td class="td-muted">
+                  <%= user.lastLogin ? new Date(user.lastLogin).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : 'Never' %>
+                </td>
+                <td class="td-muted">
+                  <%= new Date(user.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) %>
+                </td>
+                <td>
+                  <% if (user._id.toString() !== currentUser._id.toString()) { %>
+                  <div class="d-flex gap-8" style="flex-wrap:wrap;">
+                    <!-- Change Role -->
+                    <form action="/users/<%= user._id %>/role?_method=PUT" method="POST" style="display:inline;">
+                      <input type="hidden" name="role" value="<%= user.role === 'admin' ? 'user' : 'admin' %>">
+                      <button type="submit" class="btn btn-secondary btn-sm"
+                        data-confirm="Change <%= user.name %>'s role to <%= user.role === 'admin' ? 'user' : 'admin' %>?">
+                        <%= user.role === 'admin' ? '↓ Demote' : '↑ Promote' %>
+                      </button>
+                    </form>
+                    <!-- Toggle Active -->
+                    <form action="/users/<%= user._id %>/toggle-active?_method=PUT" method="POST" style="display:inline;">
+                      <button type="submit" class="btn <%= user.isActive ? 'btn-danger' : 'btn-success' %> btn-sm"
+                        data-confirm="<%= user.isActive ? 'Deactivate' : 'Activate' %> <%= user.name %>?">
+                        <%= user.isActive ? 'Deactivate' : 'Activate' %>
+                      </button>
+                    </form>
+                    <!-- Delete -->
+                    <form action="/users/<%= user._id %>?_method=DELETE" method="POST" style="display:inline;">
+                      <button type="submit" class="btn btn-danger btn-sm"
+                        data-confirm="Permanently delete <%= user.name %> and ALL their tasks?">✕</button>
+                    </form>
+                  </div>
+                  <% } else { %>
+                    <span style="font-size:11px;color:var(--text-muted);">—</span>
+                  <% } %>
+                </td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/js/app.js"></script>
+</body>
+</html>

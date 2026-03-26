@@ -1,0 +1,133 @@
+/* Reset */
+* {
+  box-sizing: border-box;
+}
+
+/* Page background */
+body {
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  min-height: 100vh;
+  color: #333;
+}
+
+/* Main card */
+.App {
+  max-width: 650px;
+  margin: 60px auto;
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 14px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* App title */
+h1 {
+  text-align: center;
+  color: #4b2aad;
+  margin-bottom: 25px;
+  font-size: 30px;
+}
+
+/* Section title */
+h2 {
+  color: #2c3e50;
+  margin-bottom: 15px;
+  font-size: 22px;
+}
+
+/* Expenses container */
+.expenses {
+  margin-top: 10px;
+}
+
+/* Form */
+.expense-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 25px;
+}
+
+.expense-form input {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.expense-form input:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+/* Button */
+.expense-form button {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.expense-form button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(102, 126, 234, 0.5);
+}
+
+/* Expense list */
+.expense-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.expense-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f6f7fb;
+  padding: 12px 15px;
+  margin-bottom: 12px;
+  border-radius: 10px;
+  border-left: 6px solid #667eea;
+}
+
+/* Expense name */
+.expense-list li span:first-child {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* Amount */
+.expense-list .amount {
+  font-weight: bold;
+  color: #764ba2;
+}
+
+/* Message */
+.message {
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: #27ae60;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .App {
+    margin: 20px;
+  }
+
+  .expense-form {
+    flex-direction: column;
+  }
+
+  .expense-form button {
+    width: 100%;
+  }
+}

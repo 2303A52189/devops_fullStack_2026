@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="app-wrapper">
+  <%- include('../partials/sidebar') %>
+  <div class="main-content">
+    <%- include('../partials/topbar', { pageTitle: 'Study Tasks' }) %>
+    <%- include('../partials/flash') %>
+    <div class="page-content">
+      <div class="page-header">
+        <div class="page-header-left">
+          <h1 class="page-title">Study Tasks</h1>
+          <p class="page-subtitle"><%= tasks.length %> task<%= tasks.length !== 1 ? 's' : '' %> in your planner</p>
+        </div>
+        <div class="d-flex gap-8">
+          <a href="/planner/ai-schedule" class="btn btn-secondary">✦ AI Schedule</a>
+          <a href="/planner/create" class="btn btn-primary">＋ New Task</a>
+        </div>
+      </div>
+
+      <!-- AI Recommendation banner -->
+      <% if (recommendation) { %>
+      <div class="ai-box mb-16">
+        <div class="ai-box-label">✦ AI Recommends Next</div>
+        <div class="d-flex align-center justify-between" style="flex-wrap:wrap;gap:12px;">
+          <div>
+            <div class="ai-box-title"><%= recommendation.task.topic %> — <span style="color:var(--text-secondary);font-size:14px;"><%= recommendation.task.subject %></span></div>
+            <p class="ai-box-reason" style="margin-bottom:0;"><%= recommendation.reason %></p>
+          </div>
+          <a href="/planner/<%= recommendation.task._id %>" class="btn btn-primary btn-sm">Start →</a>
+        </div>
+      </div>
+      <% } %>
+
+      <!-- Filters -->
+      <form action="/planner" method="GET">
+        <div class="filters-bar">
+          <input type="text" name="search" class="form-control" placeholder="🔍 Search tasks..." value="<%= filters.search || '' %>" id="liveSearch">
+          <select name="status" class="form-control">
+            <option value="">All Status</option>
+            <option value="pending"    <%= filters.status === 'pending'     ? 'selected' : '' %>>Pending</option>
+            <option value="in-progress"<%= filters.status === 'in-progress' ? 'selected' : '' %>>In Progress</option>
+            <option value="completed"  <%= filters.status === 'completed'   ? 'selected' : '' %>>Completed</option>
+            <option value="overdue"    <%= filters.status === 'overdue'     ? 'selected' : '' %>>Overdue</option>
+          </select>
+          <select name="priority" class="form-control">
+            <option value="">All Priority</option>
+            <option value="critical"<%= filters.priority === 'critical' ? 'selected' : '' %>>Critical</option>
+            <option value="high"    <%= filters.priority === 'high'     ? 'selected' : '' %>>High</option>
+            <option value="medium"  <%= filters.priority === 'medium'   ? 'selected' : '' %>>Medium</option>
+            <option value="low"     <%= filters.priority === 'low'      ? 'selected' : '' %>>Low</option>
+          </select>
+          <select name="sort" class="form-control">
+            <option value="">Sort: Deadline</option>
+            <option value="priority"<%= filters.sort === 'priority' ? 'selected' : '' %>>Sort: AI Score</option>
+            <option value="subject" <%= filters.sort === 'subject'  ? 'selected' : '' %>>Sort: Subject</option>
+            <option value="created" <%= filters.sort === 'created'  ? 'selected' : '' %>>Sort: Newest</option>
+          </select>
+          <button type="submit" class="btn btn-secondary">Apply</button>
+          <a href="/planner" class="btn btn-ghost">Reset</a>
+        </div>
+      </form>
+
+      <!-- Task Table -->
+      <div class="card">
+        <% if (tasks.length === 0) { %>
+          <div class="empty-state">
+            <div class="empty-icon">📭</div>
+            <div class="empty-title">No tasks found</div>
+            <p class="empty-desc">Add a task to get started with your AI study plan.</p>
+            <a href="/planner/create" class="btn btn-primary">＋ Create Task</a>
+          </div>
+        <% } else { %>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th data-sort>Subject / Topic</th>
+                  <th data-sort>Priority</th>
+                  <th data-sort>Difficulty</th>
+                  <th data-sort>Deadline</th>
+                  <th data-sort>Status</th>
+                  <th style="font-family:var(--font-mono);font-size:10px;">AI Score</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% tasks.forEach(task => { %>
+                <tr data-searchable>
+                  <td>
+                    <div style="font-weight:600;color:var(--text-primary);">
+                      <a href="/planner/<%= task._id %>" style="color:inherit;transition:color 0.15s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='inherit'">
+                        <%= task.topic %>
+                      </a>
+                    </div>
+                    <div class="td-muted"><%= task.subject %></div>
+                  </td>
+                  <td><span class="badge badge-<%= task.priority %>"><%= task.priority %></span></td>
+                  <td><span class="badge badge-<%= task.difficulty %>"><%= task.difficulty %></span></td>
+                  <td>
+                    <div style="font-size:13px;"><%= new Date(task.deadline).toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'}) %></div>
+                    <div class="td-muted" style="color:<%= task.daysLeft < 0 ? 'var(--red)' : task.daysLeft <= 3 ? 'var(--amber)' : 'var(--text-muted)' %>">
+                      <%= task.daysLeft < 0 ? `${Math.abs(task.daysLeft)}d overdue` : task.daysLeft === 0 ? 'Due today' : `${task.daysLeft}d left` %>
+                    </div>
+                  </td>
+                  <td><span class="badge badge-<%= task.status %>"><%= task.status %></span></td>
+                  <td>
+                    <span style="font-family:var(--font-mono);font-size:12px;font-weight:700;color:var(--accent);">
+                      <%= task.aiScore %>
+                    </span>
+                  </td>
+                  <td>
+                    <div class="d-flex gap-8">
+                      <a href="/planner/<%= task._id %>" class="btn btn-ghost btn-sm">View</a>
+                      <a href="/planner/<%= task._id %>/edit" class="btn btn-secondary btn-sm">Edit</a>
+                      <% if (task.status !== 'completed') { %>
+                      <form action="/planner/<%= task._id %>/complete" method="POST" style="display:inline;">
+                        <button type="submit" class="btn btn-success btn-sm">✓</button>
+                      </form>
+                      <% } %>
+                      <form action="/planner/<%= task._id %>?_method=DELETE" method="POST" style="display:inline;">
+                        <button type="submit" class="btn btn-danger btn-sm"
+                          data-confirm="Delete '<%= task.topic %>'? This cannot be undone.">✕</button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/js/app.js"></script>
+</body>
+</html>

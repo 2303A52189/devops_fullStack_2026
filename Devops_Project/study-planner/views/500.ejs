@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>500 — Server Error</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="auth-page">
+  <div style="text-align:center;position:relative;z-index:1;">
+    <div style="font-family:var(--font-mono);font-size:120px;font-weight:700;color:var(--border-light);line-height:1;margin-bottom:16px;">500</div>
+    <h1 style="font-family:var(--font-display);font-size:28px;font-weight:800;color:var(--text-primary);margin-bottom:10px;">Server Error</h1>
+    <p style="color:var(--text-secondary);margin-bottom:16px;">Something went wrong on our end. Please try again.</p>
+    <% if (typeof error !== 'undefined' && process.env.NODE_ENV !== 'production') { %>
+      <code style="display:block;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;font-size:12px;color:var(--red);max-width:500px;margin:0 auto 24px;text-align:left;">
+        <%= error %>
+      </code>
+    <% } %>
+    <a href="/dashboard" class="btn btn-primary btn-lg">← Back to Dashboard</a>
+  </div>
+</div>
+</body>
+</html>

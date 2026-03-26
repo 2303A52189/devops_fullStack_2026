@@ -1,0 +1,14 @@
+<header class="topbar">
+  <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+
+  <div class="topbar-title"><%= typeof pageTitle !== 'undefined' ? pageTitle : 'Dashboard' %></div>
+
+  <div class="topbar-actions">
+    <a href="/planner/create" class="btn btn-primary btn-sm">
+      ＋ New Task
+    </a>
+    <a href="/profile" class="btn-icon" data-tooltip="Profile">◎</a>
+  </div>
+</header>

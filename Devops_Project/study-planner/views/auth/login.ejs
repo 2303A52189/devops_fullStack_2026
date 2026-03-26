@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="auth-logo-mark">SP</div>
+      <div class="auth-logo-text">
+        Study Planner
+        <span>AI-Powered Learning</span>
+      </div>
+    </div>
+
+    <h1 class="auth-title">Welcome back</h1>
+    <p class="auth-subtitle">Sign in to continue your learning journey</p>
+
+    <% if (flashError && flashError.length) { %>
+      <div class="flash flash-error">⚠ <%= flashError[0] %></div>
+    <% } %>
+    <% if (flashSuccess && flashSuccess.length) { %>
+      <div class="flash flash-success">✓ <%= flashSuccess[0] %></div>
+    <% } %>
+
+    <form action="/auth/login" method="POST" novalidate>
+      <div class="form-group">
+        <label class="form-label" for="email">Email Address</label>
+        <input
+          type="email" id="email" name="email"
+          class="form-control" placeholder="you@university.edu"
+          required autocomplete="email"
+        >
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="password">Password</label>
+        <input
+          type="password" id="password" name="password"
+          class="form-control" placeholder="Your password"
+          required autocomplete="current-password"
+        >
+      </div>
+
+      <button type="submit" class="btn btn-primary w-full" style="justify-content:center;font-size:15px;padding:12px;">
+        Sign In →
+      </button>
+    </form>
+
+    <div class="auth-divider">or</div>
+
+    <div class="auth-footer">
+      Don't have an account?
+      <a href="/auth/register">Create one free</a>
+    </div>
+
+    <div style="margin-top:24px;padding:14px;background:var(--bg-elevated);border-radius:var(--radius-sm);border:1px solid var(--border);">
+      <p style="font-size:11px;color:var(--text-muted);text-align:center;font-family:var(--font-mono);">
+        Demo: admin@studyplanner.com / Admin@123456
+      </p>
+    </div>
+  </div>
+</div>
+<script src="/js/app.js"></script>
+</body>
+</html>

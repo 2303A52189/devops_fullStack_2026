@@ -1,0 +1,59 @@
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">SP</div>
+    <div class="logo-text">
+      Study Planner
+      <span>AI-Powered</span>
+    </div>
+  </div>
+
+  <div class="sidebar-nav">
+    <div class="nav-section-label">Main</div>
+    <a href="/dashboard" class="nav-item">
+      <span class="nav-icon">⊞</span> Dashboard
+    </a>
+    <a href="/planner" class="nav-item">
+      <span class="nav-icon">✎</span> My Tasks
+    </a>
+    <a href="/planner/create" class="nav-item">
+      <span class="nav-icon">＋</span> New Task
+    </a>
+    <a href="/planner/ai-schedule" class="nav-item">
+      <span class="nav-icon">✦</span> AI Schedule
+    </a>
+
+    <div class="nav-section-label" style="margin-top:16px;">Account</div>
+    <a href="/profile" class="nav-item">
+      <span class="nav-icon">◎</span> Profile
+    </a>
+    <% if (isAdmin) { %>
+    <a href="/users" class="nav-item">
+      <span class="nav-icon">◈</span> Users
+    </a>
+    <% } %>
+
+    <div class="nav-section-label" style="margin-top:16px;">System</div>
+    <form action="/auth/logout" method="POST" style="margin:0;">
+      <button type="submit" class="nav-item" style="width:100%;border:none;background:none;text-align:left;cursor:pointer;color:var(--text-secondary);">
+        <span class="nav-icon">⇥</span> Logout
+      </button>
+    </form>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="user-avatar">
+        <% if (currentUser && currentUser.avatar) { %>
+          <img src="<%= currentUser.avatar %>" alt="<%= currentUser.name %>">
+        <% } else { %>
+          <%= currentUser ? currentUser.name.charAt(0).toUpperCase() : 'U' %>
+        <% } %>
+      </div>
+      <div class="user-info">
+        <div class="user-name"><%= currentUser ? currentUser.name : 'User' %></div>
+        <div class="user-role"><%= currentUser ? currentUser.role : 'user' %></div>
+      </div>
+    </div>
+  </div>
+</nav>

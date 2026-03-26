@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="app-wrapper">
+  <%- include('../partials/sidebar') %>
+  <div class="main-content">
+    <%- include('../partials/topbar', { pageTitle: 'New Task' }) %>
+    <%- include('../partials/flash') %>
+    <div class="page-content">
+      <div class="page-header">
+        <div class="page-header-left">
+          <h1 class="page-title">Create Study Task</h1>
+          <p class="page-subtitle">AI will score and schedule your task automatically</p>
+        </div>
+        <a href="/planner" class="btn btn-ghost">← Back to Tasks</a>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:24px;align-items:start;">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">📝 Task Details</div>
+          </div>
+          <div class="card-body">
+            <form action="/planner" method="POST" novalidate>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label" for="subject">Subject *</label>
+                  <input type="text" id="subject" name="subject" class="form-control"
+                    placeholder="e.g. Mathematics, Physics" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="topic">Topic *</label>
+                  <input type="text" id="topic" name="topic" class="form-control"
+                    placeholder="e.g. Integration by Parts" required>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="description">Description</label>
+                <textarea id="description" name="description" class="form-control" maxlength="500"
+                  placeholder="What specifically needs to be studied or completed?"></textarea>
+              </div>
+
+              <div class="form-grid-3">
+                <div class="form-group">
+                  <label class="form-label" for="deadline">Deadline *</label>
+                  <input type="date" id="deadline" name="deadline" class="form-control" required
+                    min="<%= new Date().toISOString().split('T')[0] %>">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="estimatedHours">Est. Hours *</label>
+                  <input type="number" id="estimatedHours" name="estimatedHours" class="form-control"
+                    placeholder="e.g. 3" min="0.5" max="50" step="0.5" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="priority">Priority</label>
+                  <select id="priority" name="priority" class="form-control">
+                    <option value="low">🟢 Low</option>
+                    <option value="medium" selected>🟡 Medium</option>
+                    <option value="high">🟠 High</option>
+                    <option value="critical">🔴 Critical</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label" for="difficulty">Difficulty Level</label>
+                  <select id="difficulty" name="difficulty" class="form-control">
+                    <option value="easy">Easy</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="hard">Hard</option>
+                    <option value="expert">Expert</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="tags">Tags (comma-separated)</label>
+                  <input type="text" id="tags" name="tags" class="form-control" placeholder="exam, chapter3, review">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="notes">Notes</label>
+                <textarea id="notes" name="notes" class="form-control" maxlength="1000"
+                  placeholder="Additional notes, resources, or reminders..." style="min-height:80px;"></textarea>
+              </div>
+
+              <div class="d-flex gap-12" style="margin-top:8px;">
+                <button type="submit" class="btn btn-primary btn-lg">
+                  ✦ Create & Schedule with AI
+                </button>
+                <a href="/planner" class="btn btn-ghost btn-lg">Cancel</a>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- AI Info panel -->
+        <div>
+          <div class="ai-box" style="margin-bottom:16px;">
+            <div class="ai-box-label">✦ How AI Scoring Works</div>
+            <p style="font-size:13px;color:var(--text-secondary);line-height:1.7;margin-bottom:14px;">
+              The AI engine calculates a priority score based on:
+            </p>
+            <div style="font-size:13px;color:var(--text-secondary);">
+              <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);">
+                <span>⏱ Deadline Urgency</span> <span style="color:var(--accent);font-family:var(--font-mono);">40%</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);">
+                <span>🔴 Priority Level</span> <span style="color:var(--accent);font-family:var(--font-mono);">30%</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);">
+                <span>🧠 Difficulty Level</span> <span style="color:var(--accent);font-family:var(--font-mono);">20%</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:7px 0;">
+                <span>⌚ Estimated Hours</span> <span style="color:var(--accent);font-family:var(--font-mono);">10%</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header"><div class="card-title">💡 Study Tips</div></div>
+            <div class="card-body" style="font-size:13px;color:var(--text-secondary);line-height:1.8;">
+              <p>• Set realistic deadlines — AI reschedules overdue tasks automatically</p>
+              <p>• Use difficulty levels honestly for better scheduling</p>
+              <p>• Break large topics into smaller tasks (≤3 hrs each)</p>
+              <p>• Add tags to group related tasks for quick filtering</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/js/app.js"></script>
+</body>
+</html>
